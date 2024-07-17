@@ -24,6 +24,8 @@ jobs:
 
     - name: Build
       run: |
+        git config --global user.name "Grunt Script Deploy"
+        git config --global user.email "sandychad@outlook.com"
         npm install
         npm run build
         npm run deploy
