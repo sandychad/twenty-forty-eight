@@ -1,11 +1,11 @@
 import React from 'react';
-import Game from './components/Game';
+import Board from './components/Board';
 
 function App() {
   return (
     <div className="App">
       <h1>2048</h1>
-      <Game />
+      <Board />
       <h3 style={{fontFamily: "monospace", fontSize: "1.9em"}}>By Sandy Chadalavada</h3>
     </div>
   );

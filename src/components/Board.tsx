@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useRef} from 'react';
-import Board, { ShiftDirection } from '../models/Board';
+import Game, { ShiftDirection } from '../models/Game';
 import Square from './Square';
 
 
-const Game: React.FC = () => {
-    const [board, setBoard] = useState<number[][]>([]);
-    const boardRef = useRef<number[][]>();
-    boardRef.current = board;
+const Board: React.FC = () => {
+    const [game, setGame] = useState<number[][]>([]);
+    const gameRef = useRef<number[][]>();
+    gameRef.current = game;
     
 
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -34,17 +34,17 @@ const Game: React.FC = () => {
         }
 
         if (direction) {
-            const newBoard  = Board.moveGrid(boardRef.current!.slice(), direction);
-            setBoard(newBoard);
+            const newGame  = Game.moveGrid(gameRef.current!.slice(), direction);
+            setGame(newGame);
         }
     }
 
     useEffect(() => {
-        setBoard(Board.getGrid());
+        setGame(Game.getGrid());
         window.addEventListener('keyup', handleKeyUp);
 
         return () => {
-            setBoard([]);
+            setGame([]);
             window.removeEventListener('keyup', handleKeyUp, true);
         }
     }, []);
@@ -53,7 +53,7 @@ const Game: React.FC = () => {
     return (
      <>
         {
-            board?.map((row, x) => {
+            game?.map((row, x) => {
                 return (
                     <div key={x} className={"row row-" + x.toString()}>
                         {
@@ -72,4 +72,4 @@ const Game: React.FC = () => {
     )
 }
 
-export default Game;
+export default Board;
