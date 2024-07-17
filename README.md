@@ -1,5 +1,8 @@
 # 2048 Clone
 
+Link to demo: [https://sandychad.github.io/twenty-forty-eight/](https://sandychad.github.io/twenty-forty-eight/).
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
