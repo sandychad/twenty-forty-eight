@@ -5,11 +5,6 @@ export enum ShiftDirection {
     Down = "down"
 }
 
-enum RotateDirection {
-    Left = "left",
-    Right = "right"
-}
-
 export class Board {
     
     static setPosition(position: number, value: number, grid: number[][]) {
