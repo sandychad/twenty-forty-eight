@@ -6,8 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,18 +19,23 @@ jobs:
         node-version: [14.x, 16.x, 18.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: Install and Build
       run: |
-        git config --global user.name "sandychad@outlook.com"
-        git config --global user.password "m3an1ng0flyfe*"
-        npm install
+        npm ci
         npm run build
-        npm run deploy
-        grunt
+    
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: build # The folder the action should deploy.
+        git-config-name: GitHub Actions
+        git-config-email: sandychad@outlook.com
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
