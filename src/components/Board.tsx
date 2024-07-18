@@ -2,12 +2,15 @@ import React, {useEffect, useState, useRef} from 'react';
 import Game, { ShiftDirection } from '../models/Game';
 import Square from './Square';
 
+interface BoardProps {
+    addToScore: (points: number) => void;
+}
 
-const Board: React.FC = () => {
+const Board: React.FC<BoardProps> = ({addToScore}) => {
     const [game, setGame] = useState<number[][]>([]);
     const gameRef = useRef<number[][]>();
     gameRef.current = game;
-    
+
 
     const handleKeyUp = (e: KeyboardEvent) => {
         e.preventDefault();
@@ -34,14 +37,15 @@ const Board: React.FC = () => {
         }
 
         if (direction) {
-            const newGame  = Game.moveGrid(gameRef.current!.slice(), direction);
-            setGame(newGame);
+            const {newGrid, newScore}  = Game.moveGrid(gameRef.current!.slice(), direction);
+            setGame(newGrid);
+            addToScore(newScore);            
         }
     }
 
     useEffect(() => {
         setGame(Game.getGrid());
-        window.addEventListener('keyup', handleKeyUp);
+        window.addEventListener('keyup', handleKeyUp, true);
 
         return () => {
             setGame([]);

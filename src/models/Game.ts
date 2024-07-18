@@ -5,6 +5,11 @@ export enum ShiftDirection {
     Down = "down"
 }
 
+interface IMergeResult {
+    newGrid: number[][],
+    newScore: number
+}
+
 export class Board {
     
     static setPosition(position: number, value: number, grid: number[][]) {
@@ -110,8 +115,9 @@ export class Board {
         }
     }
 
-    static mergeLeftOrRight(grid: number[][], direction: ShiftDirection): number[][] {
+    static mergeLeftOrRight(grid: number[][], direction: ShiftDirection): IMergeResult {
         let returnGrid: number[][] = grid.slice();
+        let scoreAdded: number = 0;
 
         for (let x=0; x<4; x++) {
             if (direction === ShiftDirection.Left) {
@@ -123,6 +129,7 @@ export class Board {
                     if (val !== -1 && val === nextVal) {
                         returnGrid[x][y] = val * 2;
                         returnGrid[x][y+1] = -1;
+                        scoreAdded += val * 2;
                     }
                 }  
             } else {
@@ -133,17 +140,19 @@ export class Board {
                     if (val !== -1 && val === prevVal) {
                         returnGrid[x][y] = val * 2;
                         returnGrid[x][y-1] = -1;
+                        scoreAdded += val * 2;
                     }
                 }
             }
             
         }
 
-        return returnGrid;
+        return { newGrid:returnGrid, newScore: scoreAdded };
     }
     
-    static mergeUpOrDown(grid: number[][], direction: ShiftDirection): number[][] {
+    static mergeUpOrDown(grid: number[][], direction: ShiftDirection): IMergeResult {
         let returnGrid: number[][] = grid.slice();
+        let scoreAdded: number = 0;
 
         for (let y=0; y<4; y++) {
             if (direction === ShiftDirection.Up) {
@@ -154,6 +163,7 @@ export class Board {
                     if (val !== -1 && val === nextVal) {
                         returnGrid[x][y] = val * 2;
                         returnGrid[x+1][y] = -1;
+                        scoreAdded += val * 2;
                     }
                 }  
             } else {
@@ -164,17 +174,18 @@ export class Board {
                     if (val !== -1 && val === prevVal) {
                         returnGrid[x][y] = val * 2;
                         returnGrid[x-1][y] = -1;
+                        scoreAdded += val * 2;
                     }
                 }
             }
             
         }
 
-        return returnGrid;
+        return { newGrid:returnGrid, newScore: scoreAdded };
     }
 
 
-    static mergeGrid(grid: number[][], direction: ShiftDirection): number[][] {
+    static mergeGrid(grid: number[][], direction: ShiftDirection): IMergeResult {
         switch(direction) {
             case ShiftDirection.Left:
             case ShiftDirection.Right:
@@ -183,18 +194,18 @@ export class Board {
             case ShiftDirection.Down:
                 return this.mergeUpOrDown(grid, direction);
             default:
-                return grid;
+                return { newGrid: grid, newScore: 0};
         }
     }
 
-    static moveGrid(grid: number[][], direction: ShiftDirection): number[][] {
+    static moveGrid(grid: number[][], direction: ShiftDirection): IMergeResult {
         let returnGrid: number[][] = [];
+
         returnGrid = this.shiftGrid(grid, direction);
-        returnGrid = this.mergeGrid(grid, direction);
-        returnGrid = this.shiftGrid(grid, direction);
+        const mergeResult = this.mergeGrid(grid, direction);
+        returnGrid = this.shiftGrid(mergeResult.newGrid, direction);
 
         let pos;
-        
         while(true) {
             pos = Math.floor(Math.random() * 16)
             const [x, y] = this.getGridIndices(pos)
@@ -204,7 +215,7 @@ export class Board {
             }
         }
 
-        return returnGrid;
+        return { newGrid: returnGrid, newScore: mergeResult.newScore};
 
     }
 
