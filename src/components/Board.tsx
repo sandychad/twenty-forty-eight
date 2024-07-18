@@ -45,10 +45,12 @@ const Board: React.FC<BoardProps> = ({addToScore}) => {
 
     useEffect(() => {
         setGame(Game.getGrid());
+        // eslint-disable-next-line
         window.addEventListener('keyup', handleKeyUp, true);
 
         return () => {
             setGame([]);
+            // eslint-disable-next-line
             window.removeEventListener('keyup', handleKeyUp, true);
         }
     }, []);
